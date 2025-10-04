@@ -4,7 +4,6 @@ FROM python:3.13-slim
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-ENV PORT=8000
 
 # Set work directory
 WORKDIR /app
@@ -35,9 +34,8 @@ RUN adduser --disabled-password --gecos '' appuser && \
     chown -R appuser:appuser /app
 USER appuser
 
-# Expose port
-EXPOSE 8000
-
 # Set entrypoint
 ENTRYPOINT ["/entrypoint.sh"]
 
+# Default command - this ensures PORT is passed to the entrypoint
+CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "2"]
